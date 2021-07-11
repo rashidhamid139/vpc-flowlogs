@@ -48,12 +48,12 @@ LOGDNA_SERVICE_KEY=$(ibmcloud resource service-key $LOGDNA_SERVICE_NAME-for-func
 LOGDNA_API_KEY=$(echo $LOGDNA_SERVICE_KEY | jq -r '.[0].credentials.apikey')
 LOGDNA_INGESTION_KEY=$(echo $LOGDNA_SERVICE_KEY | jq -r '.[0].credentials.ingestion_key')
 
-# one trigger, create-trigger, to handle new flowlog objects in COS
+# one trigger, create-trigger1, to handle new flowlog objects in COS
 echo '>>> function trigger from COS'
-if ibmcloud fn trigger get create-trigger > /dev/null 2>&1; then
+if ibmcloud fn trigger get create-trigger1 > /dev/null 2>&1; then
   echo "Trigger on create already exists"
 else
-  ibmcloud fn trigger create create-trigger --feed /whisk.system/cos/changes \
+  ibmcloud fn trigger create create-trigger1 --feed /whisk.system/cos/changes \
     --param bucket $COS_BUCKET_NAME \
     --param event_types create
 fi
@@ -65,14 +65,14 @@ if [ $skip == false ]; then
 
   # the fn update comand will create the action if it does not exist or update if it does exist
   echo '>>> update action with python zip'
-  ibmcloud fn action update log --param cosApiKey $COS_API_KEY --param cosInstanceId $COS_INSTANCE_ID --param logdnaKey $LOGDNA_INGESTION_KEY --param logdnaIngestionEndpoint $LOGDNA_INGESTION_ENDPOINT actions/log.zip --kind python:3.7
+  ibmcloud fn action update vpclog --param cosApiKey $COS_API_KEY --param cosInstanceId $COS_INSTANCE_ID --param logdnaKey $LOGDNA_INGESTION_KEY --param logdnaIngestionEndpoint $LOGDNA_INGESTION_ENDPOINT actions/vpclog.zip --kind python:3.7
 
   # connect the trigger to the action via a rule
   echo '>>> rule from trigger to action'
-  if ibmcloud fn rule get create-rule > /dev/null 2>&1; then
+  if ibmcloud fn rule get create-rule1 > /dev/null 2>&1; then
     echo "Rule already exists"
   else
-    ibmcloud fn rule create create-rule create-trigger log
+    ibmcloud fn rule create create-rule1 create-trigger1 vpclog
   fi
 fi
 (
