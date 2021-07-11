@@ -6,7 +6,7 @@ ibmcloud target -r $REGION
 
 echo ">>> Targeting resource group $RESOURCE_GROUP_NAME..."
 ibmcloud target -g $RESOURCE_GROUP_NAME
-
+ibmcloud target --cf
 echo ">>> Targeting vpc generation 2..."
 ibmcloud is target --gen 2
 
