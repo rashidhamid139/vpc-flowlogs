@@ -8,6 +8,7 @@ echo ">>> Targeting resource group $RESOURCE_GROUP_NAME..."
 ibmcloud target -g $RESOURCE_GROUP_NAME
 ibmcloud target --cf
 echo ">>> Targeting vpc generation 2..."
+ibmcloud target -g DEV
 ibmcloud is target --gen 2
 
 echo ">>> Verify the VPC ssh key exists..."
