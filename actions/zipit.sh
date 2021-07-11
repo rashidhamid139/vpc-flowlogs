@@ -9,4 +9,4 @@ if [ ! -d virtualenv ]; then
     ./virtualenv_init.sh
   fi
 fi
-zip -r log.zip virtualenv __main__.py lib
+zip -r vpclog.zip virtualenv __main__.py lib
