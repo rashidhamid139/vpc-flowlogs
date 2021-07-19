@@ -47,7 +47,8 @@ COS_INSTANCE_ID=$(echo $COS_SERVICE_KEY | jq -r '.[0].credentials.resource_insta
 LOGDNA_SERVICE_KEY=$(ibmcloud resource service-key $LOGDNA_SERVICE_NAME-for-functions --output json)
 LOGDNA_API_KEY=$(echo $LOGDNA_SERVICE_KEY | jq -r '.[0].credentials.apikey')
 LOGDNA_INGESTION_KEY=$(echo $LOGDNA_SERVICE_KEY | jq -r '.[0].credentials.ingestion_key')
-
+echo $LOGDNA_INGESTION_ENDPOINT
+echo $LOGDNA_INGESTION_KEY
 # one trigger, create-trigger1, to handle new flowlog objects in COS
 echo '>>> function trigger from COS'
 if ibmcloud fn trigger get create-trigger1 > /dev/null 2>&1; then
@@ -65,6 +66,8 @@ if [ $skip == false ]; then
 
   # the fn update comand will create the action if it does not exist or update if it does exist
   echo '>>> update action with python zip'
+  echo $COS_API_KEY
+  echo $COS_INSTANCE_ID
   ibmcloud fn action update vpclog --param cosApiKey $COS_API_KEY --param cosInstanceId $COS_INSTANCE_ID --param logdnaKey $LOGDNA_INGESTION_KEY --param logdnaIngestionEndpoint $LOGDNA_INGESTION_ENDPOINT actions/vpclog.zip --kind python:3.7
 
   # connect the trigger to the action via a rule
